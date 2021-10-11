@@ -55,9 +55,10 @@ public class FileService {
         var request = new ListObjectsV2Request();
         request.withBucketName(bucket);
 
-        return getListResult(request)
-                .stream()
+        return getListResult(request).stream()
+                .filter(f -> f.getKey().contains("/"))
                 .filter(f -> !(f.getKey().toLowerCase().endsWith(".jpeg") || f.getKey().toLowerCase().endsWith(".jpg")))
+                .peek(f -> f.setKey(f.getKey().substring(0, f.getKey().indexOf("/"))))
                 .collect(Collectors.toList());
     }
 
@@ -112,7 +113,7 @@ public class FileService {
             log.error("Specified path is not valid");
             return new ArrayList<>();
         }
-        return (List<File>) FileUtils.listFiles(new File(path ), extensions, false);
+        return (List<File>) FileUtils.listFiles(new File(path), extensions, false);
     }
 
 }

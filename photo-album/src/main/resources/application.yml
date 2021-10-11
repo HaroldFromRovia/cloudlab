@@ -10,5 +10,5 @@ cloud:
     region: ru-central1
     accessKey: ${AWS-ACCESS-KEY-ID}
     secretKey: ${AWS_SECRET_ACCESS_KEY}
-    bucket: album-storage
+    bucket: ${BUCKET}
     endpoint: storage.yandexcloud.net
