@@ -1,0 +1,14 @@
+spring:
+  main:
+    web-application-type: none
+logging:
+  pattern:
+    console: '%clr(%4p): %msg%n'
+
+cloud:
+  aws:
+    region: ru-central1
+    accessKey: ${AWS-ACCESS-KEY-ID}
+    secretKey: ${AWS_SECRET_ACCESS_KEY}
+    bucket: album-storage
+    endpoint: storage.yandexcloud.net
