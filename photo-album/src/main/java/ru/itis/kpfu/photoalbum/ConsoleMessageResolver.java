@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import ru.itis.kpfu.photoalbum.command.Command;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +32,11 @@ public class ConsoleMessageResolver {
     private void initializeCommands() {
         var commands = context.getBeansOfType(Command.class);
         commands.forEach((header, command) -> addCommand(command));
+    }
+
+    @PostConstruct
+    private void printHelp(){
+        commandMap.get("help").execute();
     }
 
     private void addCommand(Command command) {

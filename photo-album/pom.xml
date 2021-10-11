@@ -10,7 +10,7 @@
     </parent>
     <groupId>ru.itis.kpfu</groupId>
     <artifactId>photo-album</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>photo-album</name>
     <description>photo-album</description>
     <properties>
@@ -83,7 +83,7 @@
                         <configuration>
                             <classifier>spring-boot</classifier>
                             <mainClass>
-                                com.baeldung.executable.ExecutableMavenJar
+                                ru.itis.kpfu.photoalbum.PhotoAlbumApplication
                             </mainClass>
                         </configuration>
                     </execution>
