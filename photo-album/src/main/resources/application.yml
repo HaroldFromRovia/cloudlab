@@ -8,7 +8,7 @@ logging:
 cloud:
   aws:
     region: ru-central1
-    accessKey: ${AWS-ACCESS-KEY-ID}
+    accessKey: ${AWS_ACCESS_KEY_ID}
     secretKey: ${AWS_SECRET_ACCESS_KEY}
     bucket: ${BUCKET}
     endpoint: storage.yandexcloud.net
