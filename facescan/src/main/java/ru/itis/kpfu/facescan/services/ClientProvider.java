@@ -34,6 +34,7 @@ public class ClientProvider {
                 .bucket(System.getenv("BUCKET"))
                 .queueUrl(System.getenv("AWS_QUEUE_URL"))
                 .build();
+        System.out.println(properties.toString());
     }
 
     public AmazonSQS createSqsClient() {
