@@ -1,30 +1,15 @@
 package ru.itis.kpfu.facescan.services;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.Protocol;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.json.JSONObject;
 import ru.itis.kpfu.facescan.Handler;
 import ru.itis.kpfu.facescan.models.dto.*;
@@ -50,22 +35,18 @@ import java.util.List;
 
 public class FaceScanService {
 
-    private final AWSProperties properties;
     private final AmazonS3 client;
+    private final AmazonSQS sqsClient;
+    private final AWSProperties properties;
     private final String faceSearchUrl = "https://vision.api.cloud.yandex.net/vision/v1/batchAnalyze";
     private final String resultPath = "analyze/";
+    private final ClientProvider clientProvider;
 
     public FaceScanService() {
-        this.properties = AWSProperties.builder()
-                .endpoint("storage.yandexcloud.net")
-                .region("ru-central1")
-                .accessKey(System.getenv("AWS_ACCESS_KEY_ID"))
-                .secretKey(System.getenv("AWS_SECRET_ACCESS_KEY"))
-                .apiSecret(System.getenv("API_SECRET"))
-                .folder(System.getenv("AWS_FOLDER_ID"))
-                .bucket(System.getenv("BUCKET"))
-                .build();
-        this.client = createClient();
+        this.clientProvider = new ClientProvider();
+        this.sqsClient = clientProvider.createSqsClient();
+        this.client = clientProvider.createClient();
+        this.properties = clientProvider.getProperties();
     }
 
     @SneakyThrows
@@ -144,6 +125,7 @@ public class FaceScanService {
             var coordinates = vertices.get(i).getCoordinates();
             var width = Math.abs(coordinates.get(3).getX() - coordinates.get(0).getX());
             var height = Math.abs(coordinates.get(0).getY() - coordinates.get(1).getY());
+            var key = resultPath + fileName.replace("main/", "") + "/" + i + ".jpeg";
             BufferedImage subImage = image.getSubimage(coordinates.get(0).getX(), coordinates.get(0).getY(), width, height);
 
             ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -152,34 +134,18 @@ public class FaceScanService {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(os.size());
 
-            PutObjectRequest putObjectRequest = new PutObjectRequest(properties.getBucket(), resultPath + fileName.replace("main/", "") + "/" + i + ".jpeg", is, metadata);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(properties.getBucket(), key, is, metadata);
+            SendMessageRequest sqsRequest = new SendMessageRequest();
+            sqsRequest.withMessageBody(key);
+            sqsRequest.withQueueUrl(properties.getQueueUrl());
+
             client.putObject(putObjectRequest);
+            sqsClient.sendMessage(sqsRequest);
+
         }
     }
 
     private boolean isCreateEvent(Message message) {
         return message.getEventMetadata().getEventType().equals(EventTypes.CREATE.getEventName());
-    }
-
-    private AmazonS3 createClient() {
-        AWSCredentials credentials;
-        if (properties.getAccessKey() != null && properties.getSecretKey() != null)
-            credentials = new BasicAWSCredentials(properties.getAccessKey(), properties.getSecretKey());
-        else {
-            credentials = new ProfileCredentialsProvider().getCredentials();
-        }
-
-        ClientConfiguration clientConfig = new ClientConfiguration();
-        clientConfig.setProtocol(Protocol.HTTP);
-
-        AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(
-                properties.getEndpoint(), properties.getRegion());
-
-        return AmazonS3ClientBuilder.standard()
-                .withPathStyleAccessEnabled(true)
-                .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                .withClientConfiguration(clientConfig)
-                .withEndpointConfiguration(endpointConfiguration)
-                .build();
     }
 }

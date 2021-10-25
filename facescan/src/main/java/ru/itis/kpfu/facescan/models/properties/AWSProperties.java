@@ -18,4 +18,5 @@ public class AWSProperties {
     private String bucket;
     private String region;
     private String apiSecret;
+    private String queueUrl;
 }
