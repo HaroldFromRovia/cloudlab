@@ -1,8 +1,8 @@
 package ru.itis.kpfu.telegram.service;
 
+import com.pengrad.telegrambot.model.Update;
 import lombok.SneakyThrows;
 import org.apache.http.client.utils.URIBuilder;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -20,7 +20,7 @@ public class Service {
                 .build();
 
         var uri = new URIBuilder(defaultBotURL)
-                .addParameter("chat_id", String.valueOf(update.getMessage().getChat().getId()))
+                .addParameter("chat_id", String.valueOf(update.message().chat().id()))
                 .addParameter("text", "Hello world")
                 .build();
         var request = HttpRequest.newBuilder()
