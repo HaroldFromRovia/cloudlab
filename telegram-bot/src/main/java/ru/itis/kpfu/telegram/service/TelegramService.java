@@ -52,7 +52,7 @@ public class TelegramService {
         }
 
         if (Objects.nonNull(reply)) {
-            faceScanService.setName(reply.getText().split("\n")[1], messageText);
+            faceScanService.setName(reply.getCaption().split("\n")[1], messageText);
             sendToBot(chat.getId(), "Successfully set name for a photo");
             return Response.builder()
                     .statusCode(200)

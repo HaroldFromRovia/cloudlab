@@ -15,4 +15,5 @@ public class Message {
     private String text;
     private Chat chat;
     private Message reply_to_message;
+    private String caption;
 }
