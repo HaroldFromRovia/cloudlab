@@ -12,6 +12,7 @@ public class TelegramSender {
     }
 
     public void sendPhoto(String chatId, byte[] photoBytes, String captionKey) {
+        System.out.println(chatId);
         SendPhoto sendPhoto = new SendPhoto(chatId, photoBytes).caption("кто это? \n" + captionKey);
         telegramBot.execute(sendPhoto);
     }

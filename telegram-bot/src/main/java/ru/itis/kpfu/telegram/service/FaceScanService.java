@@ -24,7 +24,8 @@ public class FaceScanService {
     public List<S3Object> findByName(String name) {
         var request = new ListObjectsV2Request();
         List<S3Object> result = new ArrayList<>();
-        request.withBucketName(properties.getBucket());
+        request.withBucketName(properties.getBucket())
+                .withPrefix("main/");
 
         var filtered = client.listObjectsV2(request)
                 .getObjectSummaries();
@@ -44,7 +45,7 @@ public class FaceScanService {
     public void setName(String key, String name) {
         System.out.println("Key: " + key);
         System.out.println("Name: " + name);
-        var metadata = client.getObject(properties.getBucket(), key)
+        var metadata = client.getObject(properties.getBucket(), "main/" + key.substring(8, key.lastIndexOf("/")))
                 .getObjectMetadata();
         metadata.addUserMetadata("names", metadata.getUserMetaDataOf("names") + name + ",");
         CopyObjectRequest copyObjectRequest = new CopyObjectRequest(properties.getBucket(), key, properties.getBucket(), key)

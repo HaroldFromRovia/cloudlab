@@ -1,7 +1,6 @@
 package ru.itis.kpfu.telegram.service;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.SneakyThrows;
@@ -27,7 +26,7 @@ public class TelegramService {
             e.printStackTrace();
             System.out.println(update.toString());
             return Response.builder()
-                    .statusCode(500)
+                    .statusCode(200)
                     .body("{\"message\": \"" + e.getMessage() + "\"}")
                     .build();
         }
@@ -77,5 +76,4 @@ public class TelegramService {
         SendMessage sendRequest = new SendMessage(chatId, text);
         bot.execute(sendRequest);
     }
-
 }
