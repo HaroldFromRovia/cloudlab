@@ -17,6 +17,10 @@ public class TelegramHandler implements Function<Request, Response> {
     @Override
     public Response apply(Request request) {
         Update update = JsonMapper.fromJson(request.getBody(), Update.class);
-        return telegramService.process(update);
+        try {
+            return telegramService.process(update);
+        } catch (Exception e) {
+            return new Response(200, "ok");
+        }
     }
 }
