@@ -38,14 +38,13 @@ public class Handler implements YcFunction<String, String> {
         String objectKey = eventParser.getObjectKey(eventJson);
         byte[] photoBytes = null;
         try {
-             photoBytes = amazonS3.getObject(bucketName, objectKey).getObjectContent().readAllBytes();
+            photoBytes = amazonS3.getObject(bucketName, objectKey).getObjectContent().readAllBytes();
         } catch (IOException e) {
             System.err.println("can't get object bytes by key from the message (update)");
         }
         try {
             chatId = amazonS3.listObjectsV2(bucketName, "users").getObjectSummaries().get(1).getKey().substring(6);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("can't get chatId from object storage");
         }
 

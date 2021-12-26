@@ -56,6 +56,7 @@ public class FaceScanService {
 
         GetObjectRequest request = new GetObjectRequest(properties.getBucket(), key);
         S3Object object = client.getObject(request);
+        if (object.getObjectMetadata().getUserMetadata().keySet().size() != 0) return "Kek";
 
         if (isCreateEvent(message)) {
             String response = uploadToScan(object);
