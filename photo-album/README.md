@@ -13,3 +13,4 @@ AWS_SECRET_ACCESS_KEY
 BUCKET 
 
 Либо же можно при запуске приложения писать java -jar target/photo-album-0.1-spring-boot.jar --BUCKET=your_bucket --AWS_ACCESS_KEY_ID=your_key_id --AWS_SECRET_ACCESS_KEY=your_secret_key
+Если хотите, чтобы фотки шли в тригер на распознование лиц, то нужно класть их в альбом main
