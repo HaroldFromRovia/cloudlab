@@ -14,11 +14,9 @@ public class FaceScanService {
     private final AmazonS3 client;
     private final AWSProvider clientProvider;
     private final AWSProperties properties;
-    private final TelegramService telegramService;
 
     public FaceScanService() {
         this.clientProvider = new AWSProvider();
-        this.telegramService = new TelegramService();
         this.client = clientProvider.createClient();
         this.properties = clientProvider.getProperties();
     }
@@ -29,13 +27,13 @@ public class FaceScanService {
         request.withBucketName(properties.getBucket());
 
         var filtered = client.listObjectsV2(request)
-                .getObjectSummaries()
-                .stream()
-                .filter(blob -> !blob.getKey().contains("/"))
-                .collect(Collectors.toList());
+                .getObjectSummaries();
+        System.out.println(filtered);
         filtered.forEach(blob -> {
-            var meta = client.getObjectMetadata(properties.getBucket(), blob.getKey());
-            if (meta.getUserMetadata().get("names").contains(name)) {
+            var meta = client.getObjectMetadata(properties.getBucket(), blob.getKey()).getUserMetadata();
+            System.out.println(meta.toString());
+
+            if (meta.get("names") != null && meta.get("names").contains(name)) {
                 result.add(client.getObject(properties.getBucket(), blob.getKey()));
             }
         });
@@ -43,12 +41,13 @@ public class FaceScanService {
         return result;
     }
 
-    public void setName(String key, String text) {
+    public void setName(String key, String name) {
+        System.out.println("Key: " + key);
+        System.out.println("Name: " + name);
         var metadata = client.getObject(properties.getBucket(), key)
                 .getObjectMetadata();
-        metadata.addUserMetadata("names", metadata.getUserMetaDataOf("names") + "," + text);
-        CopyObjectRequest copyObjectRequest = new CopyObjectRequest(properties.getBucket(), key,
-                properties.getBucket(), key)
+        metadata.addUserMetadata("names", metadata.getUserMetaDataOf("names") + name + ",");
+        CopyObjectRequest copyObjectRequest = new CopyObjectRequest(properties.getBucket(), key, properties.getBucket(), key)
                 .withNewObjectMetadata(metadata);
 
         client.copyObject(copyObjectRequest);

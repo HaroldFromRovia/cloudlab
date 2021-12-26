@@ -29,28 +29,7 @@ public class AWSProvider {
                 .bucket(System.getenv("BUCKET"))
                 .queueUrl(System.getenv("AWS_QUEUE_URL"))
                 .build();
-        System.out.println(properties.toString());
-    }
-
-    public AmazonSQS createSqsClient() {
-        AWSCredentials credentials;
-        if (properties.getAccessKey() != null && properties.getSecretKey() != null)
-            credentials = new BasicAWSCredentials(properties.getAccessKey(), properties.getSecretKey());
-        else {
-            credentials = new ProfileCredentialsProvider().getCredentials();
-        }
-
-        ClientConfiguration clientConfig = new ClientConfiguration();
-        clientConfig.setProtocol(Protocol.HTTP);
-
-        AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(
-                properties.getEndpoint(), properties.getRegion());
-
-        return AmazonSQSClientBuilder.standard()
-                .withEndpointConfiguration(endpointConfiguration)
-                .withClientConfiguration(clientConfig)
-                .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                .build();
+        System.out.println(properties);
     }
 
     public AmazonS3 createClient() {

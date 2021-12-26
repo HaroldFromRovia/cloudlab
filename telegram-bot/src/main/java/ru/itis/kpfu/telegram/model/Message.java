@@ -14,5 +14,5 @@ public class Message {
 
     private String text;
     private Chat chat;
-    private Message replyToMessage;
+    private Message reply_to_message;
 }
