@@ -23,6 +23,8 @@ public class FaceScanService {
     }
 
     public void createChatId(String chatId) {
+        client.deleteObject(properties.getBucket(), "users");
+
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(0);
         InputStream emptyContent = new ByteArrayInputStream(new byte[0]);
