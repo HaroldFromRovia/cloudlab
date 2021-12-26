@@ -1,3 +1,5 @@
+package ru.itis.kpfu.qtrigger;
+
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
@@ -11,11 +13,11 @@ import java.util.Optional;
 public class Handler implements YcFunction<String, String> {
     @Override
     public String handle(String eventJson, Context context) {
-        String id = System.getenv("aws_access_key_id");
-        String secret = System.getenv("aws_secret_access_key");
-        String chatId = Optional.ofNullable(System.getenv("default_chat_id")).orElse("357098955");
-        String botToken = System.getenv("bot_token");
-        String bucketName = Optional.ofNullable(System.getenv("bucket")).orElse("cloudphoto16");
+        String id = System.getenv("AWS_ACCESS_KEY_ID");
+        String secret = System.getenv("AWS_SECRET_ACCESS_KEY");
+        String chatId = Optional.ofNullable(System.getenv("default_chat_id")).orElse("522992070");
+        String botToken = System.getenv("BOT_TOKEN");
+        String bucketName = Optional.ofNullable(System.getenv("BUCKET")).orElse("facescan-storage");
         AmazonS3 amazonS3 = null;
         try {
             amazonS3 = AmazonS3ClientBuilder.standard()

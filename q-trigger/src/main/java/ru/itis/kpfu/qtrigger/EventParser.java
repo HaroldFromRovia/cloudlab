@@ -1,3 +1,5 @@
+package ru.itis.kpfu.qtrigger;
+
 import org.json.JSONObject;
 
 public class EventParser {

@@ -1,3 +1,5 @@
+package ru.itis.kpfu.qtrigger;
+
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendPhoto;
 
