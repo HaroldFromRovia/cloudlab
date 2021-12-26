@@ -17,7 +17,7 @@ public class TelegramHandler implements Function<Request, Response> {
     @Override
     public Response apply(Request request) {
         Update update = JsonMapper.fromJson(request.getBody(), Update.class);
-        telegramService.resolve(update);
+        telegramService.process(update);
 
         return Response.builder()
                 .statusCode(200)
