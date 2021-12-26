@@ -58,6 +58,10 @@ public class TelegramService {
                     .build();
         }
 
+        if (message.getText().equals("/start")){
+            faceScanService.createChatId(message.getChat().getId().toString());
+        }
+
         bot.execute(new SendMessage(message.getChat().getId(), "Cannot' recognize command"));
         return Response.builder()
                 .statusCode(200)

@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.*;
 import ru.itis.kpfu.telegram.config.AWSProperties;
 import ru.itis.kpfu.telegram.config.AWSProvider;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,14 @@ public class FaceScanService {
         this.clientProvider = new AWSProvider();
         this.client = clientProvider.createClient();
         this.properties = clientProvider.getProperties();
+    }
+
+    public void createChatId(String chatId) {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(0);
+        InputStream emptyContent = new ByteArrayInputStream(new byte[0]);
+        PutObjectRequest putObjectRequest = new PutObjectRequest(properties.getBucket(), "users/" + chatId, emptyContent, metadata);
+        client.putObject(putObjectRequest);
     }
 
     public List<S3Object> findByName(String name) {
