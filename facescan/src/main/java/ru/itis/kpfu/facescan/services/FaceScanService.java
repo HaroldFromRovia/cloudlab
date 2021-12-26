@@ -105,6 +105,7 @@ public class FaceScanService {
     private List<Vertices> getCoordinates(String response) {
         JSONObject object = new JSONObject(response);
         List<Vertices> vertices = new ArrayList<>();
+        System.out.println(response);
         var faces = object.getJSONArray("results")
                 .getJSONObject(0)
                 .getJSONArray("results")
@@ -141,7 +142,6 @@ public class FaceScanService {
 
             client.putObject(putObjectRequest);
             sqsClient.sendMessage(sqsRequest);
-
         }
     }
 

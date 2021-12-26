@@ -19,7 +19,7 @@ public class UploadCommand extends Command {
 
     @Parameter(names = {"-p", "-path"})
     private String path;
-    @Parameter(names = {"-a", "-album"})
+    @Parameter(names = {"-a", "-album"}, required = true)
     private String album;
 
     private final FileService fileService;
