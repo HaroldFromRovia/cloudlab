@@ -43,7 +43,7 @@ public class Handler implements YcFunction<String, String> {
             System.err.println("can't get object bytes by key from the message (update)");
         }
         try {
-            chatId = amazonS3.listObjectsV2(bucketName, "users").getObjectSummaries().get(0).getKey();
+            chatId = amazonS3.listObjectsV2(bucketName, "users").getObjectSummaries().get(1).getKey().substring(6);
         }
         catch (Exception e) {
             System.err.println("can't get chatId from object storage");
