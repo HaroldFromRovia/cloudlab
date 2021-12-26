@@ -1,9 +1,7 @@
 package ru.itis.kpfu.telegram.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.GetObjectMetadataRequest;
-import com.amazonaws.services.s3.model.ListObjectsV2Request;
-import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.*;
 import ru.itis.kpfu.telegram.config.AWSProperties;
 import ru.itis.kpfu.telegram.config.AWSProvider;
 
@@ -45,7 +43,14 @@ public class FaceScanService {
         return result;
     }
 
-    public void setName(String name, String text) {
+    public void setName(String key, String text) {
+        var metadata = client.getObject(properties.getBucket(), key)
+                .getObjectMetadata();
+        metadata.addUserMetadata("names", metadata.getUserMetaDataOf("names") + "," + text);
+        CopyObjectRequest copyObjectRequest = new CopyObjectRequest(properties.getBucket(), key,
+                properties.getBucket(), key)
+                .withNewObjectMetadata(metadata);
 
+        client.copyObject(copyObjectRequest);
     }
 }
