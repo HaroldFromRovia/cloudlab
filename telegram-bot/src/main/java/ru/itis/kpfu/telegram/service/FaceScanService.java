@@ -7,7 +7,6 @@ import ru.itis.kpfu.telegram.config.AWSProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FaceScanService {
 
@@ -45,10 +44,11 @@ public class FaceScanService {
     public void setName(String key, String name) {
         System.out.println("Key: " + key);
         System.out.println("Name: " + name);
-        var metadata = client.getObject(properties.getBucket(), "main/" + key.substring(8, key.lastIndexOf("/")))
+        String newKey = "main/" + key.substring(8, key.lastIndexOf("/"));
+        var metadata = client.getObject(properties.getBucket(), newKey)
                 .getObjectMetadata();
         metadata.addUserMetadata("names", metadata.getUserMetaDataOf("names") + name + ",");
-        CopyObjectRequest copyObjectRequest = new CopyObjectRequest(properties.getBucket(), key, properties.getBucket(), key)
+        CopyObjectRequest copyObjectRequest = new CopyObjectRequest(properties.getBucket(), newKey, properties.getBucket(), newKey)
                 .withNewObjectMetadata(metadata);
 
         client.copyObject(copyObjectRequest);
