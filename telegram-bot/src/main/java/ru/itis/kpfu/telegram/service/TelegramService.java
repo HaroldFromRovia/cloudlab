@@ -17,8 +17,7 @@ public class TelegramService {
     public Response process(Update update) {
         try {
             var message = update.getMessage();
-
-
+            parseMessage(message);
         } catch (Exception e) {
             System.out.println(update.toString());
             return Response.builder()
@@ -31,9 +30,10 @@ public class TelegramService {
     private Response parseMessage(Message message){
         var reply = message.getReplyToMessage();
         var chat = message.getChat();
+        var messageText = message.getText();
 
         if(message.getText().startsWith("/find")){
-            find();
+            faceScanService.findByName(messageText.substring(messageText.indexOf(" ")));
 
             return Response.builder()
                     .statusCode(200)
@@ -41,7 +41,7 @@ public class TelegramService {
         }
 
         if(Objects.nonNull(reply)){
-            recognize();
+            faceScanService.setName(reply.getText());
         }
     }
 

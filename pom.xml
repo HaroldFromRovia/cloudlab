@@ -5,6 +5,9 @@
     <packaging>pom</packaging>
     <modules>
         <module>q-trigger</module>
+        <module>facescan</module>
+        <module>photo-album</module>
+        <module>telegram-bot</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
